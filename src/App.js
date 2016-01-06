@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 import * as UserModal from "./UserModal";
-import { Button, Modal, Table } from "react-bootstrap";
+import { Button, Modal, Table, Panel, Dropdown, MenuItem, Glyphicon } from "react-bootstrap";
 
 const initialModel = {
 	modal: false,
@@ -34,6 +34,13 @@ const newUser = () => {
 
 export const update = (state = initialModel, action) => {
 	switch (action.type) {
+		case 'REMOVE_USER':
+			return {
+				...state,
+				rows: state.rows.filter(user => {
+					return user.id !== action.user.id;
+				})
+			}
 		case 'CANCEL_USER':
 			return {
 				...state,
@@ -67,7 +74,7 @@ export const update = (state = initialModel, action) => {
 			return {
 				...state,
 				modal: true,
-				currentUser: action.user
+				userModal: UserModal.initialState(action.user)
 			}
 		default:
 			return state
@@ -84,7 +91,7 @@ export const View = ({
 		modal = (
 			<UserModal.View
 				store={store}
-				user={state.currentUser}
+				state={state.userModal}
 				onSave={(user) =>
 					store.dispatch({
 						type: 'SAVE_USER',
@@ -101,19 +108,42 @@ export const View = ({
 	}
 let rows = state.rows.map(function(person) {
 	return (
-		<tr key={person.id}
-		    onClick={() => store.dispatch({
-		    	type: 'EDIT_USER',
-		    	user: { ...person }
-		    })}>
+		<tr key={person.id}>
 			<td>{person.name}</td>
 			<td>{person.email}</td>
+			<td style={{textAlign: 'center', verticalAlign: 'middle'}}>
+				<Dropdown id={"dropdown" + person.id} pullRight>
+					<Glyphicon style={{cursor: 'pointer'}} bsRole="toggle" glyph="cog" />
+		      <Dropdown.Menu bsRole="menu">
+		        <MenuItem
+		        	onClick={() =>
+		        		store.dispatch({
+						    	type: 'EDIT_USER',
+						    	user: { ...person }
+		    				})
+		        	}
+		        	eventKey="1">
+		        		Edit
+		        </MenuItem>
+		        <MenuItem
+		        	onClick={() =>
+		        		store.dispatch({
+						    	type: 'REMOVE_USER',
+						    	user: { ...person }
+		    				})
+		        	}
+		        	eventKey="2">
+		        		Remove
+		        </MenuItem>
+		      </Dropdown.Menu>
+		    </Dropdown>
+    	</td>
 		</tr>
 	);
 });
 
 	return (
-		<div>
+		<Panel>
 			{modal}
 			<Table striped bordered condensed hover>
 				<tbody>
@@ -127,7 +157,7 @@ let rows = state.rows.map(function(person) {
 						type: 'EDIT_USER',
 						user: newUser()
 					})
-				}>Add</Button>
-		</div>
+				}>Create new</Button>
+		</Panel>
 	);
 };

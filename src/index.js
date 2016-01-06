@@ -8,7 +8,7 @@ import * as UserModal from './UserModal';
 
 const update = (state, action) => {
 	const newState = App.update(state, action);
-	newState.currentUser = UserModal.update(newState.currentUser, action);
+	newState.userModal = UserModal.update(newState.userModal, action);
 	return newState;
 }
 
