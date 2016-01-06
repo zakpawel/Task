@@ -143,21 +143,28 @@ let rows = state.rows.map(function(person) {
 });
 
 	return (
-		<Panel>
-			{modal}
-			<Table striped bordered condensed hover>
-				<tbody>
-					{rows}
-				</tbody>
-			</Table>
-			<Button
-				bsStyle='primary'
-				onClick={() =>
-					store.dispatch({
-						type: 'EDIT_USER',
-						user: newUser()
-					})
-				}>Create new</Button>
-		</Panel>
+		<div className="app-container">
+			<Panel className="col-md-8 col-md-offset-2">
+				{modal}
+				<Table striped bordered condensed hover>
+					<thead>
+						<th>Name</th>
+						<th>Email</th>
+						<th>Actions</th>
+					</thead>
+					<tbody>
+						{rows}
+					</tbody>
+				</Table>
+				<Button
+					bsStyle='primary'
+					onClick={() =>
+						store.dispatch({
+							type: 'EDIT_USER',
+							user: newUser()
+						})
+					}>Create new</Button>
+			</Panel>
+		</div>
 	);
 };

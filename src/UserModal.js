@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Button, Modal, Table, Input } from "react-bootstrap";
-require('./fixGlyphs.less');
+require('./styles.less');
 
 export const initialState = (user) => {
 	const state = {
