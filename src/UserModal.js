@@ -22,14 +22,6 @@ export const update = (state, action) => {
 
 export class View extends React.Component {
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			name: props.name,
-			email: props.email
-		}
-	}
-
 	render() {
 
 		let { user, onSave, onCancel, store } = this.props;
@@ -39,16 +31,16 @@ export class View extends React.Component {
 				<Modal.Body>
 		      <Input
 		        type="text"
-		        value={this.state.name}
-		        onChange={(e) => {
-		        	this.setState({
-		        		...this.state,
-		        		name: e.target.value
-		        	})
-		        }}
-		        onBlur={() => store.dispatch({
+		        value={user.name}
+		        onChange={(e) =>
+		        	store.dispatch({
 			        	type: 'EDIT_NAME',
-			        	name: this.state.name
+			        	name: e.target.value
+			      	})
+		      	}
+		        onBlur={() => store.dispatch({
+			        	type: 'VALIDATE',
+			        	fields: ['name']
 			      })}
 		        placeholder="Enter name"
 		        label="Name"
@@ -61,17 +53,19 @@ export class View extends React.Component {
 		        labelClassName="label-class"/>
 		        <Input
 			        type="text"
-			        value={this.state.email}
-			        onChange={(e) => {
-			        	this.setState({
-			        		...this.state,
+			        value={user.email}
+			        onChange={(e) =>
+			        	store.dispatch({
+			        		type: 'EDIT_EMAIL',
 			        		email: e.target.value
 			        	})
-			        }}
-			        onBlur={() => store.dispatch({
-			        	type: 'EDIT_EMAIL',
-			        	email: this.state.email
-			        })}
+			        }
+			        onBlur={() =>
+			        	store.dispatch({
+				        	type: 'VALIDATE',
+				        	fields: ['email']
+			        	})
+			       	}
 			        placeholder="Enter email"
 			        label="Email"
 			        help="Email format e.g. name@mail.com"
