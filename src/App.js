@@ -5,10 +5,6 @@ import { Button, Modal, Table } from "react-bootstrap";
 
 const initialModel = {
 	modal: false,
-	currentUser: { id: 1
-		, name: 'Test1'
-		, email: 'test1@outlook.com'
-		},
 	rows: [
 		{ id: 1
 		, name: 'Test1'
@@ -24,18 +20,26 @@ const initialModel = {
 const tempID = (() => {
 	let nextId = 0;
 	return () => {
-		return nextId++;
+		return nextId--;
 	}
 })();
 
+const newUser = () => {
+	return {
+		id: tempID(),
+		name: '',
+		email: ''
+	};
+};
+
 export const update = (state = initialModel, action) => {
 	switch (action.type) {
-		case 'CLOSE_ADD_USER':
+		case 'CANCEL_USER':
 			return {
 				...state,
 				modal: false
 			}
-		case 'ADD_USER':
+		case 'SAVE_USER':
 			const userFound = state.rows.findIndex((user) => {
 				return user.id === action.user.id;
 			})
@@ -50,18 +54,20 @@ export const update = (state = initialModel, action) => {
 
 			return {
 				...state,
+				rows: state.rows.map(user => {
+					if (user.id === action.user.id) {
+						return action.user;
+					}
+					return user;
+				}),
 				modal: false
 
 			}
-		case 'NEW_USER':
+		case 'EDIT_USER':
 			return {
 				...state,
-				currentUser: {
-					id: tempID(),
-					name: '',
-					email: ''
-				},
-				modal: true
+				modal: true,
+				currentUser: action.user
 			}
 		default:
 			return state
@@ -80,13 +86,13 @@ export const View = ({
 				user={state.currentUser}
 				onSave={(user) =>
 					store.dispatch({
-						type: 'ADD_USER',
+						type: 'SAVE_USER',
 						user: user
 					})
 				}
 				onCancel={() =>
 					store.dispatch({
-						type: 'CLOSE_ADD_USER'
+						type: 'CANCEL_USER'
 					})
 				}
 			/>
@@ -94,7 +100,11 @@ export const View = ({
 	}
 let rows = state.rows.map(function(person) {
 	return (
-		<tr key={person.id}>
+		<tr key={person.id}
+		    onClick={() => store.dispatch({
+		    	type: 'EDIT_USER',
+		    	user: { ...person }
+		    })}>
 			<td>{person.name}</td>
 			<td>{person.email}</td>
 		</tr>
@@ -113,7 +123,8 @@ let rows = state.rows.map(function(person) {
 				bsStyle='primary'
 				onClick={() =>
 					store.dispatch({
-						type: 'NEW_USER'
+						type: 'EDIT_USER',
+						user: newUser()
 					})
 				}>Add</Button>
 		</div>
