@@ -83,6 +83,7 @@ export const View = ({
 	if (state.modal) {
 		modal = (
 			<UserModal.View
+				store={store}
 				user={state.currentUser}
 				onSave={(user) =>
 					store.dispatch({

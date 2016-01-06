@@ -2,12 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Button, Modal, Table, Input } from "react-bootstrap";
 
-export const update = (state = {}, action) => {
+export const update = (state, action) => {
+	console.log(action);
 	switch (action.type) {
 		case 'EDIT_NAME':
 			return {
 				...state,
-				name: action.username
+				name: action.name
 			};
 		case 'EDIT_EMAIL':
 			return {
@@ -21,33 +22,63 @@ export const update = (state = {}, action) => {
 
 export class View extends React.Component {
 
+	constructor(props) {
+		super(props);
+		this.state = {
+			name: props.name,
+			email: props.email
+		}
+	}
+
 	render() {
 
-		let { user, onSave, onCancel } = this.props;
+		let { user, onSave, onCancel, store } = this.props;
 
 		return (
 			<Modal.Dialog>
 				<Modal.Body>
 		      <Input
 		        type="text"
-		        value={user.name}
-		        onChange={() => {}}
+		        value={this.state.name}
+		        onChange={(e) => {
+		        	this.setState({
+		        		...this.state,
+		        		name: e.target.value
+		        	})
+		        }}
+		        onBlur={() => store.dispatch({
+			        	type: 'EDIT_NAME',
+			        	name: this.state.name
+			      })}
 		        placeholder="Enter name"
 		        label="Name"
-		        help="Validation is based on string length."
+		        help="Min. 3 alphanumeric characters"
 		        hasFeedback
-		        ref="input"
+		        ref={node => {
+		        	this.nameInput = node;
+		        }}
 		        groupClassName="group-class"
 		        labelClassName="label-class"/>
 		        <Input
 			        type="text"
-			        value={user.email}
-			        onChange={() => {}}
+			        value={this.state.email}
+			        onChange={(e) => {
+			        	this.setState({
+			        		...this.state,
+			        		email: e.target.value
+			        	})
+			        }}
+			        onBlur={() => store.dispatch({
+			        	type: 'EDIT_EMAIL',
+			        	email: this.state.email
+			        })}
 			        placeholder="Enter email"
 			        label="Email"
-			        help="Validation is based on string length."
+			        help="Email format e.g. name@mail.com"
 			        hasFeedback
-			        ref="input"
+			        ref={node => {
+		        		this.emailInput = node;
+		        	}}
 			        groupClassName="group-class"
 		        	labelClassName="label-class"/>
 				</Modal.Body>
