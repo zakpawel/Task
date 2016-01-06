@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from 'react-dom';
-import UserModal from "./UserModal";
+import * as UserModal from "./UserModal";
 import { Button, Modal, Table } from "react-bootstrap";
 
 const initialModel = {
@@ -21,6 +21,13 @@ const initialModel = {
 	]
 }
 
+const tempID = (() => {
+	let nextId = 0;
+	return () => {
+		return nextId++;
+	}
+})();
+
 export const update = (state = initialModel, action) => {
 	switch (action.type) {
 		case 'CLOSE_ADD_USER':
@@ -28,9 +35,32 @@ export const update = (state = initialModel, action) => {
 				...state,
 				modal: false
 			}
-		case 'SHOW_ADD_USER':
+		case 'ADD_USER':
+			const userFound = state.rows.findIndex((user) => {
+				return user.id === action.user.id;
+			})
+
+			if (userFound === -1) {
+				return {
+					...state,
+					modal: false,
+					rows: [...state.rows, action.user]
+				}
+			}
+
 			return {
 				...state,
+				modal: false
+
+			}
+		case 'NEW_USER':
+			return {
+				...state,
+				currentUser: {
+					id: tempID(),
+					name: '',
+					email: ''
+				},
 				modal: true
 			}
 		default:
@@ -39,19 +69,19 @@ export const update = (state = initialModel, action) => {
 }
 
 export const View = ({
-	store,
-	onAddUser
+	store
 }) => {
 	const state = store.getState();
 	let modal = null;
 
 	if (state.modal) {
 		modal = (
-			<UserModal
+			<UserModal.View
 				user={state.currentUser}
-				onSave={() =>
+				onSave={(user) =>
 					store.dispatch({
-						type: 'CLOSE_ADD_USER'
+						type: 'ADD_USER',
+						user: user
 					})
 				}
 				onCancel={() =>
@@ -83,7 +113,7 @@ let rows = state.rows.map(function(person) {
 				bsStyle='primary'
 				onClick={() =>
 					store.dispatch({
-						type: 'SHOW_ADD_USER'
+						type: 'NEW_USER'
 					})
 				}>Add</Button>
 		</div>
