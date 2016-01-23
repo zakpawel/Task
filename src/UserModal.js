@@ -62,8 +62,19 @@ const validateEmail = email => {
 
 export class View extends React.Component {
 
+  handleSave(user, nameValidation, emailValidation) {
+    const { store, onSave } = this.props;
+    store.dispatch({
+      type: 'VALIDATE',
+      fields: ['name', 'email'],
+    });
+    if (nameValidation === 'success' && emailValidation === 'success') {
+      onSave(user);
+    }
+  }
+
   render() {
-    const { state, onSave, onCancel, store } = this.props;
+    const { state, onCancel, store } = this.props;
     const { user, validation } = state;
 
     let nameStyle = null;
@@ -121,7 +132,7 @@ export class View extends React.Component {
                   type: 'VALIDATE',
                   fields: ['email'],
                 })
-                }
+              }
               bsStyle={emailStyle}
               placeholder="Enter email"
               help="Email format, e.g. name@mail.com"
@@ -132,15 +143,7 @@ export class View extends React.Component {
         </Modal.Body>
         <Modal.Footer>
           <Button
-            onClick={() => {
-              store.dispatch({
-                type: 'VALIDATE',
-                fields: ['name', 'email'],
-              });
-              if (nameValidation === 'success' && emailValidation === 'success') {
-                onSave(user);
-              }
-            }}
+            onClick={() => this.handleSave(user, nameValidation, emailValidation)}
             bsStyle="primary"
           >
             Save
@@ -153,8 +156,8 @@ export class View extends React.Component {
 }
 
 View.propTypes = {
-  onSave: React.PropTypes.function.isRequired,
-  onCancel: React.PropTypes.function.isRequired,
+  onSave: React.PropTypes.func.isRequired,
+  onCancel: React.PropTypes.func.isRequired,
   state: React.PropTypes.object.isRequired,
   store: React.PropTypes.object.isRequired,
 };
