@@ -17,7 +17,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'build.js',
-    publicPath: "/static/"
+    publicPath: '/static/'
   },
 
   plugins: [
@@ -37,26 +37,28 @@ module.exports = {
         test: /\.scss$/,
         include: /src/,
         loaders: [
-            'style',
-            'css',
-            'autoprefixer?browsers=last 3 versions',
-            'sass?outputStyle=expanded'
+          'style',
+          'css',
+          'autoprefixer?browsers=last 3 versions',
+          'sass?outputStyle=expanded'
         ]
       },
       {
         test: /\.less$/,
         include: /src/,
         loaders: [
-            'style',
-            'css',
-            'autoprefixer?browsers=last 3 versions',
-            'less'
+          'style',
+          'css',
+          'autoprefixer?browsers=last 3 versions',
+          'less'
         ]
       },
-      {test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
-      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
-      {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},
-      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'}
+      { test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url?limit=10000&mimetype=application/font-woff' },
+      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url?limit=10000&mimetype=application/octet-stream' },
+      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
+      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' }
     ]
   }
 
